@@ -85,9 +85,11 @@ func (q *Query) DeleteItemFromUserCart(ctx context.Context, userID int, itemID i
 }
 
 func (q *Query) InsertUser(ctx context.Context, email string, hash []byte) (pgconn.CommandTag, error) {
-	return q.DBTX.Exec(ctx, "insert into users (email, hash) values ($1, $2)", email, hash)
+	// Added public.
+	return q.DBTX.Exec(ctx, "insert into public.users (email, hash) values ($1, $2)", email, hash)
 }
 
 func (q *Query) GetUserByEmail(ctx context.Context, email string) pgx.Row {
-	return q.DBTX.QueryRow(ctx, "select id, email, hash from users where email = $1", email)
+	// Added public.
+	return q.DBTX.QueryRow(ctx, "select id, email, hash from public.users where email = $1", email)
 }

@@ -172,8 +172,9 @@ func (s *PostgresStore) RemoveCartItem(ctx context.Context, userID int, itemID i
 }
 
 func (s *PostgresStore) SaveUser(ctx context.Context, email string, hash []byte) error {
+	// Added public.
 	_, err := s.conn.Exec(ctx,
-		`INSERT INTO users (email, hash, created_at, updated_at) VALUES ($1, $2, NOW(), NOW())`,
+		`INSERT INTO public.users (email, hash, created_at, updated_at) VALUES ($1, $2, NOW(), NOW())`,
 		email, hash,
 	)
 	return err
