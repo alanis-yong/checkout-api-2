@@ -74,10 +74,7 @@ func AuthMiddleWare(next http.Handler) http.Handler {
 
 func main() {
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	godotenv.Load()
 
 	// 1. Get the connection string from the environment
 	dsn := os.Getenv("DATABASE_URL")
