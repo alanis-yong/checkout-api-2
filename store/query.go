@@ -18,7 +18,7 @@ type Query struct {
 }
 
 func (q *Query) GetItems(ctx context.Context) (pgx.Rows, error) {
-	return q.DBTX.Query(ctx, "select id, name, description, price, stock, created_at from items")
+	return q.DBTX.Query(ctx, "select id, name, description, price, stock, created_at from public.items")
 }
 
 func (q *Query) GetItemByID(ctx context.Context, id int) pgx.Row {
