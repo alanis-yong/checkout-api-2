@@ -1,0 +1,2 @@
+-- This migration is a no-op because the corresponding 'up' migration 
+-- only performed a metadata query (SELECT) and did not change the schema or data.

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment # 1. Changed from Pod to Deployment
+metadata:
+  name: nginx-deployment # 2. The name of the Manager
+  namespace: alanis-yong
+  annotations:
+    kubernetes.io/change-cause: "v1.2.0 - fix login bug"
+spec:
+  replicas: 3
+  strategy: # <-- Add this section
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1 # 1. How many pods can be "down" at once?
+      maxSurge: 1 # 2. How many "extra" pods can we spin up?
+  selector:
+    matchLabels:
+      app: nginx
+  template: # This is the "Blueprint" for the Pods
+    metadata:
+      labels:
+        app: nginx # 4. This label MUST match the selector above
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m # 5. Fixed lowercase
+              memory: 100Mi # 6. Fixed lowercase + added value

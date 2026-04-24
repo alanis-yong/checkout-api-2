@@ -1,0 +1,38 @@
+-- select * from items
+-- where id = 1;
+-- insert into items (name, description, price, stock)
+-- values ('Coffee Mug', 'Xsolla branded coffee mug', 999, 5);
+-- explain select * from items
+-- order by id desc
+-- update items set stock=4
+-- where id=9;
+-- delete from items
+-- where id = 9;
+-- select i.description, oi.quantity from order_items as oi
+-- left join items as i
+-- on oi.item_id=i.id
+-- SELECT *
+-- FROM users;
+-- SELECT id,
+--   name,
+--   price,
+--   stock
+-- FROM items;
+-- UPDATE items
+-- SET stock = 10
+-- WHERE id = 1;
+-- SELECT *
+-- from users;
+-- DELETE FROM users
+-- WHERE id = 2;
+-- SELECT *
+-- FROM idempotency_keys;
+-- SELECT id,
+--   name,
+--   stock
+-- -- FROM items;
+-- UPDATE items
+-- SET stock = 50
+-- WHERE id IN (4, 2);
+SELECT *
+FROM users;
