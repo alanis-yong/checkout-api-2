@@ -137,21 +137,43 @@ func main() {
 	http.Handle("GET /token", AuthMiddleWare(http.HandlerFunc(h.IssueJWT)))
 	http.HandleFunc("POST /token", h.IssueJWT)
 
-	fmt.Println("Server starting on :8080")
-	log.Fatal(http.ListenAndServe(":8080", middleware.CORSMiddleware(middleware.DelayMiddleware(http.DefaultServeMux))))
+	// 1. Get the port from Render's environment
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	// 2. Wrap the router with your local withCORS and the delay
+	handler := withCORS(middleware.DelayMiddleware(http.DefaultServeMux))
+
+	// 3. Start the server
+	fmt.Printf("Server starting on :%s\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, handler))
+
 }
 func withCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
 
-		// Allow localhost AND your Vercel URL
-		if origin == "http://localhost:5173" || strings.HasSuffix(origin, "https://xsolla-alanis-storefront-m4zp.vercel.app/") {
-			w.Header().Set("Access-Control-Allow-Origin", origin)
+		// List of allowed origins
+		allowedOrigins := []string{
+			"http://localhost:5173",
+			"https://xsolla-alanis-storefront-m4zp.vercel.app", // Your specific Vercel URL
+		}
+
+		// Check if the current origin is in our allowed list
+		for _, o := range allowedOrigins {
+			if origin == o {
+				w.Header().Set("Access-Control-Allow-Origin", origin)
+				break
+			}
 		}
 
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
 
+		// Handle the "Preflight" request (The browser sends this before the actual GET/POST)
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
