@@ -202,7 +202,7 @@ func (s *PostgresStore) FindUserByID(ctx context.Context, id int) (models.User, 
 
 func (s *PostgresStore) ValidateRefreshToken(ctx context.Context, token string) (int, error) {
 	var userID int
-	query := `SELECT user_id FROM refresh_tokens WHERE token = $1 AND active = true`
+	query := `SELECT user_id FROM public.refresh_tokens WHERE token = $1 AND active = true`
 	err := s.conn.QueryRow(ctx, query, token).Scan(&userID)
 	if err != nil {
 		return 0, err
@@ -211,13 +211,13 @@ func (s *PostgresStore) ValidateRefreshToken(ctx context.Context, token string) 
 }
 
 func (s *PostgresStore) SaveRefreshToken(ctx context.Context, userID int, token string) error {
-	query := `INSERT INTO refresh_tokens (user_id, token, active) VALUES ($1, $2, true)`
+	query := `INSERT INTO public.refresh_tokens (user_id, token, active) VALUES ($1, $2, true)`
 	_, err := s.conn.Exec(ctx, query, userID, token)
 	return err
 }
 
 func (s *PostgresStore) DeactivateRefreshToken(ctx context.Context, token string) error {
-	query := `UPDATE refresh_tokens SET active = false WHERE token = $1`
+	query := `UPDATE public.refresh_tokens SET active = false WHERE token = $1`
 	_, err := s.conn.Exec(ctx, query, token)
 	return err
 }
